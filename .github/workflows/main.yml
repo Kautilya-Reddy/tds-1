@@ -2,38 +2,31 @@ name: Multi-Platform Matrix Build with Artifacts
 
 on:
   push:
+    branches: [ main ]
   pull_request:
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build:
-    name: Matrix Build - 9c24886
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        node-version: [16]
+        os: [ubuntu-latest, macos-latest, windows-latest]  # Multi-platform
     runs-on: ${{ matrix.os }}
-
+    name: Build on ${{ matrix.os }}
     steps:
-      - name: Checkout repository
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-
       - name: matrix-9c24886
-        run: echo "Building on ${{ matrix.os }} with Node.js ${{ matrix.node-version }}"
+        run: echo "Building for OS ${{ matrix.os }} (matrix-9c24886)"
 
-      - name: Generate build artifact
+      - name: Generate artifact
         run: |
-          echo "Build output for OS ${{ matrix.os }} and Node.js ${{ matrix.node-version }}" > build_output.txt
-          echo "Timestamp: $(date)" >> build_output.txt
-          echo "System Info:" >> build_output.txt
-          uname -a >> build_output.txt || ver >> build_output.txt
+          echo "Build output for platform ${{ matrix.os }}" > output.txt
 
-      - name: Upload build artifact
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: build-9c24886-${{ matrix.os }}
-          path: build_output.txt
+          path: output.txt
